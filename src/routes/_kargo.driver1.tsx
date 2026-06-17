@@ -25,7 +25,10 @@ function Driver1Page() {
   const ot = useKargo((s) => s.ots.find((o) => o.estado === "recolectada" || o.estado === "asignada"));
   const scan = useKargo((s) => s.scanBultoD1);
   const firmar = useKargo((s) => s.firmarRecoleccion);
+  const reportar = useKargo((s) => s.reportarIncidencia);
   const [secs, setSecs] = useState(0);
+  const [incOpen, setIncOpen] = useState(false);
+  const [firmaOpen, setFirmaOpen] = useState(false);
 
   useEffect(() => {
     if (!ot) return;
@@ -97,17 +100,41 @@ function Driver1Page() {
               <Button
                 className="w-full gap-2"
                 disabled={!completo}
-                onClick={() => {
-                  firmar(ot.id);
-                  toast.success(`Firma capturada · ${ot.id} → WH1`);
-                }}
+                onClick={() => setFirmaOpen(true)}
               >
                 <PenTool size={14} /> Solicitar firma y cerrar <ArrowRight size={14} />
+              </Button>
+              <Button variant="outline" size="sm" className="w-full gap-2 text-destructive border-destructive/30" onClick={() => setIncOpen(true)}>
+                <AlertTriangle size={14} /> Reportar incidencia
               </Button>
             </>
           )}
         </div>
       </PhoneFrame>
+
+      {ot && (
+        <>
+          <ModalIncidencia
+            open={incOpen}
+            onOpenChange={setIncOpen}
+            otId={ot.id}
+            reportadoPor="Driver 1"
+            onSubmit={({ motivo, tipo, severidad, reportadoPor }) => {
+              reportar(ot.id, motivo, tipo, severidad, reportadoPor);
+              toast.error(`Incidencia reportada en ${ot.id}`);
+            }}
+          />
+          <ModalFirmaDigital
+            open={firmaOpen}
+            onOpenChange={setFirmaOpen}
+            otId={ot.id}
+            onSign={() => {
+              firmar(ot.id);
+              toast.success(`Firma capturada · ${ot.id} → WH1`);
+            }}
+          />
+        </>
+      )}
 
       <div className="space-y-4">
         <div className="kargo-card p-5">
