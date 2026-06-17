@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+dist-ssr/
+.output/
+.vinxi/
+.nitro/
+.tanstack/
+
+# Development
+.vscode/
+.idea/
+.env.local
+.env.*.local
+
+# Source maps in production
+*.map
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Lock files (use package.json only)
+*.lock

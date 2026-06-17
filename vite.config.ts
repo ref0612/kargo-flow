@@ -12,4 +12,33 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    build: {
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          passes: 2,
+          pure_funcs: ["console.log"],
+        },
+        mangle: true,
+        output: {
+          comments: false,
+        },
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ["react", "react-dom"],
+          },
+        },
+      },
+      sourcemap: process.env.VERCEL_ENV === "production" ? false : true,
+      reportCompressedSize: false,
+      cssCodeSplit: true,
+      chunkSizeWarningLimit: 1000,
+    },
+    ssr: {
+      noExternal: ["sonner"],
+    },
+  },
 });
