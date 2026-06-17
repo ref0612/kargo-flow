@@ -6,11 +6,22 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// Detect deployment target
+const isNetlify = process.env.NETLIFY === "true" || process.env.CONTEXT !== undefined;
+
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    // Configure Nitro preset based on deployment target
+    nitro: {
+      presets: isNetlify ? ["netlify"] : ["cloudflare-pages"],
+      output: {
+        dir: isNetlify ? ".netlify/functions" : "dist",
+        publicDir: "dist/public",
+      },
+    },
   },
   vite: {
     build: {
