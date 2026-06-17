@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_kargo/coord-kupos")({
+export const Route = createFileRoute("/_kargo/coord-kupos/")({
   head: () => ({
     meta: [
       { title: "Coordinador Global Kupos · KARGO" },

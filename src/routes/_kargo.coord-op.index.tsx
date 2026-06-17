@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import type { OT, OTEstado } from "@/lib/kargo/types";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/_kargo/coord-op")({
+export const Route = createFileRoute("/_kargo/coord-op/")({
   head: () => ({
     meta: [
       { title: "Coordinador Zonal · KARGO" },

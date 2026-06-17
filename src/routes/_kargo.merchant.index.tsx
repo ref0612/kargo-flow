@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import type { OT } from "@/lib/kargo/types";
 
-export const Route = createFileRoute("/_kargo/merchant")({
+export const Route = createFileRoute("/_kargo/merchant/")({
   head: () => ({
     meta: [
       { title: "Merchant — Crear y rastrear OTs · KARGO" },
