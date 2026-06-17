@@ -27,6 +27,17 @@ import { Route as KargoMerchantIncidenciasRouteImport } from './routes/_kargo.me
 import { Route as KargoMerchantFacturacionRouteImport } from './routes/_kargo.merchant.facturacion'
 import { Route as KargoMerchantDocumentosRouteImport } from './routes/_kargo.merchant.documentos'
 import { Route as KargoMerchantDevolucionesRouteImport } from './routes/_kargo.merchant.devoluciones'
+import { Route as KargoCoordOpMapaRouteImport } from './routes/_kargo.coord-op.mapa'
+import { Route as KargoCoordOpLogsRouteImport } from './routes/_kargo.coord-op.logs'
+import { Route as KargoCoordOpKanbanRouteImport } from './routes/_kargo.coord-op.kanban'
+import { Route as KargoCoordOpIncidenciasRouteImport } from './routes/_kargo.coord-op.incidencias'
+import { Route as KargoCoordOpDriversRouteImport } from './routes/_kargo.coord-op.drivers'
+import { Route as KargoCoordOpBusesRouteImport } from './routes/_kargo.coord-op.buses'
+import { Route as KargoCoordOpAsignacionBusRouteImport } from './routes/_kargo.coord-op.asignacion-bus'
+import { Route as KargoCoordOpAsignacionRouteImport } from './routes/_kargo.coord-op.asignacion'
+import { Route as KargoCoordOpAlertasRouteImport } from './routes/_kargo.coord-op.alertas'
+import { Route as KargoCoordKuposSlasRouteImport } from './routes/_kargo.coord-kupos.slas'
+import { Route as KargoCoordKuposOperadoresRouteImport } from './routes/_kargo.coord-kupos.operadores'
 
 const KargoRoute = KargoRouteImport.update({
   id: '/_kargo',
@@ -121,6 +132,63 @@ const KargoMerchantDevolucionesRoute =
     path: '/devoluciones',
     getParentRoute: () => KargoMerchantRoute,
   } as any)
+const KargoCoordOpMapaRoute = KargoCoordOpMapaRouteImport.update({
+  id: '/mapa',
+  path: '/mapa',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordOpLogsRoute = KargoCoordOpLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordOpKanbanRoute = KargoCoordOpKanbanRouteImport.update({
+  id: '/kanban',
+  path: '/kanban',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordOpIncidenciasRoute = KargoCoordOpIncidenciasRouteImport.update({
+  id: '/incidencias',
+  path: '/incidencias',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordOpDriversRoute = KargoCoordOpDriversRouteImport.update({
+  id: '/drivers',
+  path: '/drivers',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordOpBusesRoute = KargoCoordOpBusesRouteImport.update({
+  id: '/buses',
+  path: '/buses',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordOpAsignacionBusRoute =
+  KargoCoordOpAsignacionBusRouteImport.update({
+    id: '/asignacion-bus',
+    path: '/asignacion-bus',
+    getParentRoute: () => KargoCoordOpRoute,
+  } as any)
+const KargoCoordOpAsignacionRoute = KargoCoordOpAsignacionRouteImport.update({
+  id: '/asignacion',
+  path: '/asignacion',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordOpAlertasRoute = KargoCoordOpAlertasRouteImport.update({
+  id: '/alertas',
+  path: '/alertas',
+  getParentRoute: () => KargoCoordOpRoute,
+} as any)
+const KargoCoordKuposSlasRoute = KargoCoordKuposSlasRouteImport.update({
+  id: '/slas',
+  path: '/slas',
+  getParentRoute: () => KargoCoordKuposRoute,
+} as any)
+const KargoCoordKuposOperadoresRoute =
+  KargoCoordKuposOperadoresRouteImport.update({
+    id: '/operadores',
+    path: '/operadores',
+    getParentRoute: () => KargoCoordKuposRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -130,6 +198,17 @@ export interface FileRoutesByFullPath {
   '/driver2': typeof KargoDriver2Route
   '/merchant': typeof KargoMerchantRouteWithChildren
   '/wh-loader': typeof KargoWhLoaderRoute
+  '/coord-kupos/operadores': typeof KargoCoordKuposOperadoresRoute
+  '/coord-kupos/slas': typeof KargoCoordKuposSlasRoute
+  '/coord-op/alertas': typeof KargoCoordOpAlertasRoute
+  '/coord-op/asignacion': typeof KargoCoordOpAsignacionRoute
+  '/coord-op/asignacion-bus': typeof KargoCoordOpAsignacionBusRoute
+  '/coord-op/buses': typeof KargoCoordOpBusesRoute
+  '/coord-op/drivers': typeof KargoCoordOpDriversRoute
+  '/coord-op/incidencias': typeof KargoCoordOpIncidenciasRoute
+  '/coord-op/kanban': typeof KargoCoordOpKanbanRoute
+  '/coord-op/logs': typeof KargoCoordOpLogsRoute
+  '/coord-op/mapa': typeof KargoCoordOpMapaRoute
   '/merchant/devoluciones': typeof KargoMerchantDevolucionesRoute
   '/merchant/documentos': typeof KargoMerchantDocumentosRoute
   '/merchant/facturacion': typeof KargoMerchantFacturacionRoute
@@ -146,6 +225,17 @@ export interface FileRoutesByTo {
   '/driver1': typeof KargoDriver1Route
   '/driver2': typeof KargoDriver2Route
   '/wh-loader': typeof KargoWhLoaderRoute
+  '/coord-kupos/operadores': typeof KargoCoordKuposOperadoresRoute
+  '/coord-kupos/slas': typeof KargoCoordKuposSlasRoute
+  '/coord-op/alertas': typeof KargoCoordOpAlertasRoute
+  '/coord-op/asignacion': typeof KargoCoordOpAsignacionRoute
+  '/coord-op/asignacion-bus': typeof KargoCoordOpAsignacionBusRoute
+  '/coord-op/buses': typeof KargoCoordOpBusesRoute
+  '/coord-op/drivers': typeof KargoCoordOpDriversRoute
+  '/coord-op/incidencias': typeof KargoCoordOpIncidenciasRoute
+  '/coord-op/kanban': typeof KargoCoordOpKanbanRoute
+  '/coord-op/logs': typeof KargoCoordOpLogsRoute
+  '/coord-op/mapa': typeof KargoCoordOpMapaRoute
   '/merchant/devoluciones': typeof KargoMerchantDevolucionesRoute
   '/merchant/documentos': typeof KargoMerchantDocumentosRoute
   '/merchant/facturacion': typeof KargoMerchantFacturacionRoute
@@ -167,6 +257,17 @@ export interface FileRoutesById {
   '/_kargo/driver2': typeof KargoDriver2Route
   '/_kargo/merchant': typeof KargoMerchantRouteWithChildren
   '/_kargo/wh-loader': typeof KargoWhLoaderRoute
+  '/_kargo/coord-kupos/operadores': typeof KargoCoordKuposOperadoresRoute
+  '/_kargo/coord-kupos/slas': typeof KargoCoordKuposSlasRoute
+  '/_kargo/coord-op/alertas': typeof KargoCoordOpAlertasRoute
+  '/_kargo/coord-op/asignacion': typeof KargoCoordOpAsignacionRoute
+  '/_kargo/coord-op/asignacion-bus': typeof KargoCoordOpAsignacionBusRoute
+  '/_kargo/coord-op/buses': typeof KargoCoordOpBusesRoute
+  '/_kargo/coord-op/drivers': typeof KargoCoordOpDriversRoute
+  '/_kargo/coord-op/incidencias': typeof KargoCoordOpIncidenciasRoute
+  '/_kargo/coord-op/kanban': typeof KargoCoordOpKanbanRoute
+  '/_kargo/coord-op/logs': typeof KargoCoordOpLogsRoute
+  '/_kargo/coord-op/mapa': typeof KargoCoordOpMapaRoute
   '/_kargo/merchant/devoluciones': typeof KargoMerchantDevolucionesRoute
   '/_kargo/merchant/documentos': typeof KargoMerchantDocumentosRoute
   '/_kargo/merchant/facturacion': typeof KargoMerchantFacturacionRoute
@@ -188,6 +289,17 @@ export interface FileRouteTypes {
     | '/driver2'
     | '/merchant'
     | '/wh-loader'
+    | '/coord-kupos/operadores'
+    | '/coord-kupos/slas'
+    | '/coord-op/alertas'
+    | '/coord-op/asignacion'
+    | '/coord-op/asignacion-bus'
+    | '/coord-op/buses'
+    | '/coord-op/drivers'
+    | '/coord-op/incidencias'
+    | '/coord-op/kanban'
+    | '/coord-op/logs'
+    | '/coord-op/mapa'
     | '/merchant/devoluciones'
     | '/merchant/documentos'
     | '/merchant/facturacion'
@@ -204,6 +316,17 @@ export interface FileRouteTypes {
     | '/driver1'
     | '/driver2'
     | '/wh-loader'
+    | '/coord-kupos/operadores'
+    | '/coord-kupos/slas'
+    | '/coord-op/alertas'
+    | '/coord-op/asignacion'
+    | '/coord-op/asignacion-bus'
+    | '/coord-op/buses'
+    | '/coord-op/drivers'
+    | '/coord-op/incidencias'
+    | '/coord-op/kanban'
+    | '/coord-op/logs'
+    | '/coord-op/mapa'
     | '/merchant/devoluciones'
     | '/merchant/documentos'
     | '/merchant/facturacion'
@@ -224,6 +347,17 @@ export interface FileRouteTypes {
     | '/_kargo/driver2'
     | '/_kargo/merchant'
     | '/_kargo/wh-loader'
+    | '/_kargo/coord-kupos/operadores'
+    | '/_kargo/coord-kupos/slas'
+    | '/_kargo/coord-op/alertas'
+    | '/_kargo/coord-op/asignacion'
+    | '/_kargo/coord-op/asignacion-bus'
+    | '/_kargo/coord-op/buses'
+    | '/_kargo/coord-op/drivers'
+    | '/_kargo/coord-op/incidencias'
+    | '/_kargo/coord-op/kanban'
+    | '/_kargo/coord-op/logs'
+    | '/_kargo/coord-op/mapa'
     | '/_kargo/merchant/devoluciones'
     | '/_kargo/merchant/documentos'
     | '/_kargo/merchant/facturacion'
@@ -369,14 +503,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KargoMerchantDevolucionesRouteImport
       parentRoute: typeof KargoMerchantRoute
     }
+    '/_kargo/coord-op/mapa': {
+      id: '/_kargo/coord-op/mapa'
+      path: '/mapa'
+      fullPath: '/coord-op/mapa'
+      preLoaderRoute: typeof KargoCoordOpMapaRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/logs': {
+      id: '/_kargo/coord-op/logs'
+      path: '/logs'
+      fullPath: '/coord-op/logs'
+      preLoaderRoute: typeof KargoCoordOpLogsRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/kanban': {
+      id: '/_kargo/coord-op/kanban'
+      path: '/kanban'
+      fullPath: '/coord-op/kanban'
+      preLoaderRoute: typeof KargoCoordOpKanbanRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/incidencias': {
+      id: '/_kargo/coord-op/incidencias'
+      path: '/incidencias'
+      fullPath: '/coord-op/incidencias'
+      preLoaderRoute: typeof KargoCoordOpIncidenciasRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/drivers': {
+      id: '/_kargo/coord-op/drivers'
+      path: '/drivers'
+      fullPath: '/coord-op/drivers'
+      preLoaderRoute: typeof KargoCoordOpDriversRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/buses': {
+      id: '/_kargo/coord-op/buses'
+      path: '/buses'
+      fullPath: '/coord-op/buses'
+      preLoaderRoute: typeof KargoCoordOpBusesRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/asignacion-bus': {
+      id: '/_kargo/coord-op/asignacion-bus'
+      path: '/asignacion-bus'
+      fullPath: '/coord-op/asignacion-bus'
+      preLoaderRoute: typeof KargoCoordOpAsignacionBusRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/asignacion': {
+      id: '/_kargo/coord-op/asignacion'
+      path: '/asignacion'
+      fullPath: '/coord-op/asignacion'
+      preLoaderRoute: typeof KargoCoordOpAsignacionRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-op/alertas': {
+      id: '/_kargo/coord-op/alertas'
+      path: '/alertas'
+      fullPath: '/coord-op/alertas'
+      preLoaderRoute: typeof KargoCoordOpAlertasRouteImport
+      parentRoute: typeof KargoCoordOpRoute
+    }
+    '/_kargo/coord-kupos/slas': {
+      id: '/_kargo/coord-kupos/slas'
+      path: '/slas'
+      fullPath: '/coord-kupos/slas'
+      preLoaderRoute: typeof KargoCoordKuposSlasRouteImport
+      parentRoute: typeof KargoCoordKuposRoute
+    }
+    '/_kargo/coord-kupos/operadores': {
+      id: '/_kargo/coord-kupos/operadores'
+      path: '/operadores'
+      fullPath: '/coord-kupos/operadores'
+      preLoaderRoute: typeof KargoCoordKuposOperadoresRouteImport
+      parentRoute: typeof KargoCoordKuposRoute
+    }
   }
 }
 
 interface KargoCoordKuposRouteChildren {
+  KargoCoordKuposOperadoresRoute: typeof KargoCoordKuposOperadoresRoute
+  KargoCoordKuposSlasRoute: typeof KargoCoordKuposSlasRoute
   KargoCoordKuposIndexRoute: typeof KargoCoordKuposIndexRoute
 }
 
 const KargoCoordKuposRouteChildren: KargoCoordKuposRouteChildren = {
+  KargoCoordKuposOperadoresRoute: KargoCoordKuposOperadoresRoute,
+  KargoCoordKuposSlasRoute: KargoCoordKuposSlasRoute,
   KargoCoordKuposIndexRoute: KargoCoordKuposIndexRoute,
 }
 
@@ -385,10 +600,28 @@ const KargoCoordKuposRouteWithChildren = KargoCoordKuposRoute._addFileChildren(
 )
 
 interface KargoCoordOpRouteChildren {
+  KargoCoordOpAlertasRoute: typeof KargoCoordOpAlertasRoute
+  KargoCoordOpAsignacionRoute: typeof KargoCoordOpAsignacionRoute
+  KargoCoordOpAsignacionBusRoute: typeof KargoCoordOpAsignacionBusRoute
+  KargoCoordOpBusesRoute: typeof KargoCoordOpBusesRoute
+  KargoCoordOpDriversRoute: typeof KargoCoordOpDriversRoute
+  KargoCoordOpIncidenciasRoute: typeof KargoCoordOpIncidenciasRoute
+  KargoCoordOpKanbanRoute: typeof KargoCoordOpKanbanRoute
+  KargoCoordOpLogsRoute: typeof KargoCoordOpLogsRoute
+  KargoCoordOpMapaRoute: typeof KargoCoordOpMapaRoute
   KargoCoordOpIndexRoute: typeof KargoCoordOpIndexRoute
 }
 
 const KargoCoordOpRouteChildren: KargoCoordOpRouteChildren = {
+  KargoCoordOpAlertasRoute: KargoCoordOpAlertasRoute,
+  KargoCoordOpAsignacionRoute: KargoCoordOpAsignacionRoute,
+  KargoCoordOpAsignacionBusRoute: KargoCoordOpAsignacionBusRoute,
+  KargoCoordOpBusesRoute: KargoCoordOpBusesRoute,
+  KargoCoordOpDriversRoute: KargoCoordOpDriversRoute,
+  KargoCoordOpIncidenciasRoute: KargoCoordOpIncidenciasRoute,
+  KargoCoordOpKanbanRoute: KargoCoordOpKanbanRoute,
+  KargoCoordOpLogsRoute: KargoCoordOpLogsRoute,
+  KargoCoordOpMapaRoute: KargoCoordOpMapaRoute,
   KargoCoordOpIndexRoute: KargoCoordOpIndexRoute,
 }
 
