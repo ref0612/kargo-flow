@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Truck, Package, ScanLine, PenTool, MapPin, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Truck, Package, ScanLine, PenTool, MapPin, ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useKargo } from "@/lib/kargo/store";
 import { PhoneFrame } from "@/components/kargo/PhoneFrame";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ActivityLog } from "@/components/kargo/ActivityLog";
+import { ModalIncidencia } from "@/components/kargo/ModalIncidencia";
+import { ModalFirmaDigital } from "@/components/kargo/ModalFirmaDigital";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
