@@ -25,6 +25,27 @@ export const Route = createFileRoute("/_kargo/driver2")({
 function Driver2Page() {
   const ot = useKargo((s) => s.ots.find((o) => o.estado === "en-transito"));
   const reportar = useKargo((s) => s.reportarIncidencia);
+  const firmarPOD = useKargo((s) => s.firmarPOD);
+  const [incOpen, setIncOpen] = useState(false);
+  const [firmaOpen, setFirmaOpen] = useState(false);
+
+  function descargarManifiestoReal(o: OT) {
+    const lines = [
+      `MANIFIESTO DE CARGA — ${o.id}`,
+      `Merchant: ${o.merchant}`,
+      `Origen: ${o.origen}  →  Destino: ${o.destino}`,
+      `Bus: ${o.bus ?? "—"}  Driver 2: ${o.driver2 ?? "—"}`,
+      `Bultos: ${o.bultos}`,
+      "",
+      ...Array.from({ length: o.bultos }).map((_, i) => `  #${String(i + 1).padStart(3, "0")}  KARGO-${o.id.replace("OT-", "")}-${String(i + 1).padStart(3, "0")}  ✓`),
+    ].join("\n");
+    const blob = new Blob([lines], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `manifiesto-${o.id}.txt`; a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Manifiesto ${o.id} descargado`);
+  }
 
   return (
     <div className="grid gap-6 p-6 lg:grid-cols-[1fr_320px]">
@@ -76,17 +97,24 @@ function Driver2Page() {
                       </div>
                     ))}
                   </div>
-                  <Button size="sm" className="mt-3 w-full" onClick={() => toast.success("Manifiesto descargado")}>Descargar manifiesto</Button>
+                  <Button size="sm" className="mt-3 w-full" onClick={() => descargarManifiestoReal(ot)}>Descargar manifiesto</Button>
+                  <Button size="sm" variant="outline" className="mt-2 w-full gap-1.5" onClick={() => setFirmaOpen(true)}>
+                    <PenLine size={12} /> Firma POD del receptor
+                  </Button>
                 </div>
               </TabsContent>
               <TabsContent value="incidente" className="pt-3">
                 <div className="space-y-2">
+                  <Button variant="destructive" className="w-full gap-2 text-xs" onClick={() => setIncOpen(true)}>
+                    <AlertTriangle size={12} /> Reportar incidencia con tipo
+                  </Button>
+                  <div className="text-[10px] text-muted-foreground mt-1">Rápidos:</div>
                   {["Retraso por tránsito", "Pinchazo / mecánico", "Daño visible en carga"].map((m) => (
                     <Button
                       key={m}
                       variant="outline"
                       className="w-full justify-start gap-2 text-xs"
-                      onClick={() => { reportar(ot.id, m); toast.error(`Incidencia reportada: ${m}`); }}
+                      onClick={() => { reportar(ot.id, m, "retraso", "media", "Driver 2"); toast.error(`Incidencia: ${m}`); }}
                     >
                       <AlertTriangle size={12} className="text-destructive" /> {m}
                     </Button>
@@ -97,6 +125,30 @@ function Driver2Page() {
           )}
         </div>
       </PhoneFrame>
+
+      {ot && (
+        <>
+          <ModalIncidencia
+            open={incOpen}
+            onOpenChange={setIncOpen}
+            otId={ot.id}
+            reportadoPor="Driver 2"
+            onSubmit={({ motivo, tipo, severidad, reportadoPor }) => {
+              reportar(ot.id, motivo, tipo, severidad, reportadoPor);
+              toast.error(`Incidencia reportada en ${ot.id}`);
+            }}
+          />
+          <ModalFirmaDigital
+            open={firmaOpen}
+            onOpenChange={setFirmaOpen}
+            otId={ot.id}
+            onSign={(firma) => {
+              firmarPOD(ot.id, firma);
+              toast.success(`POD firmado para ${ot.id}`);
+            }}
+          />
+        </>
+      )}
 
       <div className="space-y-4">
         <div className="kargo-card p-5">
