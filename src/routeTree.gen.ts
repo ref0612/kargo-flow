@@ -20,6 +20,13 @@ import { Route as KargoCoordKuposRouteImport } from './routes/_kargo.coord-kupos
 import { Route as KargoMerchantIndexRouteImport } from './routes/_kargo.merchant.index'
 import { Route as KargoCoordOpIndexRouteImport } from './routes/_kargo.coord-op.index'
 import { Route as KargoCoordKuposIndexRouteImport } from './routes/_kargo.coord-kupos.index'
+import { Route as KargoMerchantSeguimientoRouteImport } from './routes/_kargo.merchant.seguimiento'
+import { Route as KargoMerchantReportesRouteImport } from './routes/_kargo.merchant.reportes'
+import { Route as KargoMerchantOrdenesRouteImport } from './routes/_kargo.merchant.ordenes'
+import { Route as KargoMerchantIncidenciasRouteImport } from './routes/_kargo.merchant.incidencias'
+import { Route as KargoMerchantFacturacionRouteImport } from './routes/_kargo.merchant.facturacion'
+import { Route as KargoMerchantDocumentosRouteImport } from './routes/_kargo.merchant.documentos'
+import { Route as KargoMerchantDevolucionesRouteImport } from './routes/_kargo.merchant.devoluciones'
 
 const KargoRoute = KargoRouteImport.update({
   id: '/_kargo',
@@ -75,6 +82,45 @@ const KargoCoordKuposIndexRoute = KargoCoordKuposIndexRouteImport.update({
   path: '/',
   getParentRoute: () => KargoCoordKuposRoute,
 } as any)
+const KargoMerchantSeguimientoRoute =
+  KargoMerchantSeguimientoRouteImport.update({
+    id: '/seguimiento',
+    path: '/seguimiento',
+    getParentRoute: () => KargoMerchantRoute,
+  } as any)
+const KargoMerchantReportesRoute = KargoMerchantReportesRouteImport.update({
+  id: '/reportes',
+  path: '/reportes',
+  getParentRoute: () => KargoMerchantRoute,
+} as any)
+const KargoMerchantOrdenesRoute = KargoMerchantOrdenesRouteImport.update({
+  id: '/ordenes',
+  path: '/ordenes',
+  getParentRoute: () => KargoMerchantRoute,
+} as any)
+const KargoMerchantIncidenciasRoute =
+  KargoMerchantIncidenciasRouteImport.update({
+    id: '/incidencias',
+    path: '/incidencias',
+    getParentRoute: () => KargoMerchantRoute,
+  } as any)
+const KargoMerchantFacturacionRoute =
+  KargoMerchantFacturacionRouteImport.update({
+    id: '/facturacion',
+    path: '/facturacion',
+    getParentRoute: () => KargoMerchantRoute,
+  } as any)
+const KargoMerchantDocumentosRoute = KargoMerchantDocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
+  getParentRoute: () => KargoMerchantRoute,
+} as any)
+const KargoMerchantDevolucionesRoute =
+  KargoMerchantDevolucionesRouteImport.update({
+    id: '/devoluciones',
+    path: '/devoluciones',
+    getParentRoute: () => KargoMerchantRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -84,6 +130,13 @@ export interface FileRoutesByFullPath {
   '/driver2': typeof KargoDriver2Route
   '/merchant': typeof KargoMerchantRouteWithChildren
   '/wh-loader': typeof KargoWhLoaderRoute
+  '/merchant/devoluciones': typeof KargoMerchantDevolucionesRoute
+  '/merchant/documentos': typeof KargoMerchantDocumentosRoute
+  '/merchant/facturacion': typeof KargoMerchantFacturacionRoute
+  '/merchant/incidencias': typeof KargoMerchantIncidenciasRoute
+  '/merchant/ordenes': typeof KargoMerchantOrdenesRoute
+  '/merchant/reportes': typeof KargoMerchantReportesRoute
+  '/merchant/seguimiento': typeof KargoMerchantSeguimientoRoute
   '/coord-kupos/': typeof KargoCoordKuposIndexRoute
   '/coord-op/': typeof KargoCoordOpIndexRoute
   '/merchant/': typeof KargoMerchantIndexRoute
@@ -93,6 +146,13 @@ export interface FileRoutesByTo {
   '/driver1': typeof KargoDriver1Route
   '/driver2': typeof KargoDriver2Route
   '/wh-loader': typeof KargoWhLoaderRoute
+  '/merchant/devoluciones': typeof KargoMerchantDevolucionesRoute
+  '/merchant/documentos': typeof KargoMerchantDocumentosRoute
+  '/merchant/facturacion': typeof KargoMerchantFacturacionRoute
+  '/merchant/incidencias': typeof KargoMerchantIncidenciasRoute
+  '/merchant/ordenes': typeof KargoMerchantOrdenesRoute
+  '/merchant/reportes': typeof KargoMerchantReportesRoute
+  '/merchant/seguimiento': typeof KargoMerchantSeguimientoRoute
   '/coord-kupos': typeof KargoCoordKuposIndexRoute
   '/coord-op': typeof KargoCoordOpIndexRoute
   '/merchant': typeof KargoMerchantIndexRoute
@@ -107,6 +167,13 @@ export interface FileRoutesById {
   '/_kargo/driver2': typeof KargoDriver2Route
   '/_kargo/merchant': typeof KargoMerchantRouteWithChildren
   '/_kargo/wh-loader': typeof KargoWhLoaderRoute
+  '/_kargo/merchant/devoluciones': typeof KargoMerchantDevolucionesRoute
+  '/_kargo/merchant/documentos': typeof KargoMerchantDocumentosRoute
+  '/_kargo/merchant/facturacion': typeof KargoMerchantFacturacionRoute
+  '/_kargo/merchant/incidencias': typeof KargoMerchantIncidenciasRoute
+  '/_kargo/merchant/ordenes': typeof KargoMerchantOrdenesRoute
+  '/_kargo/merchant/reportes': typeof KargoMerchantReportesRoute
+  '/_kargo/merchant/seguimiento': typeof KargoMerchantSeguimientoRoute
   '/_kargo/coord-kupos/': typeof KargoCoordKuposIndexRoute
   '/_kargo/coord-op/': typeof KargoCoordOpIndexRoute
   '/_kargo/merchant/': typeof KargoMerchantIndexRoute
@@ -121,6 +188,13 @@ export interface FileRouteTypes {
     | '/driver2'
     | '/merchant'
     | '/wh-loader'
+    | '/merchant/devoluciones'
+    | '/merchant/documentos'
+    | '/merchant/facturacion'
+    | '/merchant/incidencias'
+    | '/merchant/ordenes'
+    | '/merchant/reportes'
+    | '/merchant/seguimiento'
     | '/coord-kupos/'
     | '/coord-op/'
     | '/merchant/'
@@ -130,6 +204,13 @@ export interface FileRouteTypes {
     | '/driver1'
     | '/driver2'
     | '/wh-loader'
+    | '/merchant/devoluciones'
+    | '/merchant/documentos'
+    | '/merchant/facturacion'
+    | '/merchant/incidencias'
+    | '/merchant/ordenes'
+    | '/merchant/reportes'
+    | '/merchant/seguimiento'
     | '/coord-kupos'
     | '/coord-op'
     | '/merchant'
@@ -143,6 +224,13 @@ export interface FileRouteTypes {
     | '/_kargo/driver2'
     | '/_kargo/merchant'
     | '/_kargo/wh-loader'
+    | '/_kargo/merchant/devoluciones'
+    | '/_kargo/merchant/documentos'
+    | '/_kargo/merchant/facturacion'
+    | '/_kargo/merchant/incidencias'
+    | '/_kargo/merchant/ordenes'
+    | '/_kargo/merchant/reportes'
+    | '/_kargo/merchant/seguimiento'
     | '/_kargo/coord-kupos/'
     | '/_kargo/coord-op/'
     | '/_kargo/merchant/'
@@ -232,6 +320,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KargoCoordKuposIndexRouteImport
       parentRoute: typeof KargoCoordKuposRoute
     }
+    '/_kargo/merchant/seguimiento': {
+      id: '/_kargo/merchant/seguimiento'
+      path: '/seguimiento'
+      fullPath: '/merchant/seguimiento'
+      preLoaderRoute: typeof KargoMerchantSeguimientoRouteImport
+      parentRoute: typeof KargoMerchantRoute
+    }
+    '/_kargo/merchant/reportes': {
+      id: '/_kargo/merchant/reportes'
+      path: '/reportes'
+      fullPath: '/merchant/reportes'
+      preLoaderRoute: typeof KargoMerchantReportesRouteImport
+      parentRoute: typeof KargoMerchantRoute
+    }
+    '/_kargo/merchant/ordenes': {
+      id: '/_kargo/merchant/ordenes'
+      path: '/ordenes'
+      fullPath: '/merchant/ordenes'
+      preLoaderRoute: typeof KargoMerchantOrdenesRouteImport
+      parentRoute: typeof KargoMerchantRoute
+    }
+    '/_kargo/merchant/incidencias': {
+      id: '/_kargo/merchant/incidencias'
+      path: '/incidencias'
+      fullPath: '/merchant/incidencias'
+      preLoaderRoute: typeof KargoMerchantIncidenciasRouteImport
+      parentRoute: typeof KargoMerchantRoute
+    }
+    '/_kargo/merchant/facturacion': {
+      id: '/_kargo/merchant/facturacion'
+      path: '/facturacion'
+      fullPath: '/merchant/facturacion'
+      preLoaderRoute: typeof KargoMerchantFacturacionRouteImport
+      parentRoute: typeof KargoMerchantRoute
+    }
+    '/_kargo/merchant/documentos': {
+      id: '/_kargo/merchant/documentos'
+      path: '/documentos'
+      fullPath: '/merchant/documentos'
+      preLoaderRoute: typeof KargoMerchantDocumentosRouteImport
+      parentRoute: typeof KargoMerchantRoute
+    }
+    '/_kargo/merchant/devoluciones': {
+      id: '/_kargo/merchant/devoluciones'
+      path: '/devoluciones'
+      fullPath: '/merchant/devoluciones'
+      preLoaderRoute: typeof KargoMerchantDevolucionesRouteImport
+      parentRoute: typeof KargoMerchantRoute
+    }
   }
 }
 
@@ -260,10 +397,24 @@ const KargoCoordOpRouteWithChildren = KargoCoordOpRoute._addFileChildren(
 )
 
 interface KargoMerchantRouteChildren {
+  KargoMerchantDevolucionesRoute: typeof KargoMerchantDevolucionesRoute
+  KargoMerchantDocumentosRoute: typeof KargoMerchantDocumentosRoute
+  KargoMerchantFacturacionRoute: typeof KargoMerchantFacturacionRoute
+  KargoMerchantIncidenciasRoute: typeof KargoMerchantIncidenciasRoute
+  KargoMerchantOrdenesRoute: typeof KargoMerchantOrdenesRoute
+  KargoMerchantReportesRoute: typeof KargoMerchantReportesRoute
+  KargoMerchantSeguimientoRoute: typeof KargoMerchantSeguimientoRoute
   KargoMerchantIndexRoute: typeof KargoMerchantIndexRoute
 }
 
 const KargoMerchantRouteChildren: KargoMerchantRouteChildren = {
+  KargoMerchantDevolucionesRoute: KargoMerchantDevolucionesRoute,
+  KargoMerchantDocumentosRoute: KargoMerchantDocumentosRoute,
+  KargoMerchantFacturacionRoute: KargoMerchantFacturacionRoute,
+  KargoMerchantIncidenciasRoute: KargoMerchantIncidenciasRoute,
+  KargoMerchantOrdenesRoute: KargoMerchantOrdenesRoute,
+  KargoMerchantReportesRoute: KargoMerchantReportesRoute,
+  KargoMerchantSeguimientoRoute: KargoMerchantSeguimientoRoute,
   KargoMerchantIndexRoute: KargoMerchantIndexRoute,
 }
 
