@@ -16,6 +16,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import type { OT } from "@/lib/kargo/types";
+import { ModalCargaMasiva } from "@/components/kargo/ModalCargaMasiva";
+import { Upload } from "lucide-react";
 
 export const Route = createFileRoute("/_kargo/merchant/")({
   head: () => ({
@@ -30,9 +32,11 @@ export const Route = createFileRoute("/_kargo/merchant/")({
 function MerchantPage() {
   const ots = useKargo((s) => s.ots);
   const createOT = useKargo((s) => s.createOT);
+  const cargaMasiva = useKargo((s) => s.cargaMasivaOTs);
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [openCreate, setOpenCreate] = useState(false);
+  const [openMasiva, setOpenMasiva] = useState(false);
 
   const kpis = useMemo(() => {
     const activas = ots.filter((o) => o.estado !== "finalizada" && o.estado !== "incidencia").length;
@@ -60,6 +64,7 @@ function MerchantPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" className="gap-1.5"><Bell size={14} /> Alertas <span className="ml-1 rounded-full bg-destructive px-1.5 text-[10px] text-destructive-foreground">3</span></Button>
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={() => setOpenMasiva(true)}><Upload size={14} /> Carga masiva</Button>
           <Dialog open={openCreate} onOpenChange={setOpenCreate}>
             <DialogTrigger asChild>
               <Button size="sm" className="gap-1.5"><Plus size={14} /> Nueva OT</Button>
@@ -72,6 +77,14 @@ function MerchantPage() {
               }}
             />
           </Dialog>
+          <ModalCargaMasiva
+            open={openMasiva}
+            onOpenChange={setOpenMasiva}
+            onConfirm={(rows) => {
+              const created = cargaMasiva(rows);
+              toast.success(`${created.length} OTs creadas vía carga masiva`);
+            }}
+          />
         </div>
       </div>
 

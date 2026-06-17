@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as KargoRouteImport } from './routes/_kargo'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as KargoWhLoaderRouteImport } from './routes/_kargo.wh-loader'
+import { Route as KargoMerchantRouteImport } from './routes/_kargo.merchant'
 import { Route as KargoDriver2RouteImport } from './routes/_kargo.driver2'
 import { Route as KargoDriver1RouteImport } from './routes/_kargo.driver1'
+import { Route as KargoCoordOpRouteImport } from './routes/_kargo.coord-op'
+import { Route as KargoCoordKuposRouteImport } from './routes/_kargo.coord-kupos'
 import { Route as KargoMerchantIndexRouteImport } from './routes/_kargo.merchant.index'
 import { Route as KargoCoordOpIndexRouteImport } from './routes/_kargo.coord-op.index'
 import { Route as KargoCoordKuposIndexRouteImport } from './routes/_kargo.coord-kupos.index'
@@ -32,6 +35,11 @@ const KargoWhLoaderRoute = KargoWhLoaderRouteImport.update({
   path: '/wh-loader',
   getParentRoute: () => KargoRoute,
 } as any)
+const KargoMerchantRoute = KargoMerchantRouteImport.update({
+  id: '/merchant',
+  path: '/merchant',
+  getParentRoute: () => KargoRoute,
+} as any)
 const KargoDriver2Route = KargoDriver2RouteImport.update({
   id: '/driver2',
   path: '/driver2',
@@ -42,26 +50,39 @@ const KargoDriver1Route = KargoDriver1RouteImport.update({
   path: '/driver1',
   getParentRoute: () => KargoRoute,
 } as any)
-const KargoMerchantIndexRoute = KargoMerchantIndexRouteImport.update({
-  id: '/merchant/',
-  path: '/merchant/',
+const KargoCoordOpRoute = KargoCoordOpRouteImport.update({
+  id: '/coord-op',
+  path: '/coord-op',
   getParentRoute: () => KargoRoute,
+} as any)
+const KargoCoordKuposRoute = KargoCoordKuposRouteImport.update({
+  id: '/coord-kupos',
+  path: '/coord-kupos',
+  getParentRoute: () => KargoRoute,
+} as any)
+const KargoMerchantIndexRoute = KargoMerchantIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => KargoMerchantRoute,
 } as any)
 const KargoCoordOpIndexRoute = KargoCoordOpIndexRouteImport.update({
-  id: '/coord-op/',
-  path: '/coord-op/',
-  getParentRoute: () => KargoRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => KargoCoordOpRoute,
 } as any)
 const KargoCoordKuposIndexRoute = KargoCoordKuposIndexRouteImport.update({
-  id: '/coord-kupos/',
-  path: '/coord-kupos/',
-  getParentRoute: () => KargoRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => KargoCoordKuposRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/coord-kupos': typeof KargoCoordKuposRouteWithChildren
+  '/coord-op': typeof KargoCoordOpRouteWithChildren
   '/driver1': typeof KargoDriver1Route
   '/driver2': typeof KargoDriver2Route
+  '/merchant': typeof KargoMerchantRouteWithChildren
   '/wh-loader': typeof KargoWhLoaderRoute
   '/coord-kupos/': typeof KargoCoordKuposIndexRoute
   '/coord-op/': typeof KargoCoordOpIndexRoute
@@ -80,8 +101,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_kargo': typeof KargoRouteWithChildren
+  '/_kargo/coord-kupos': typeof KargoCoordKuposRouteWithChildren
+  '/_kargo/coord-op': typeof KargoCoordOpRouteWithChildren
   '/_kargo/driver1': typeof KargoDriver1Route
   '/_kargo/driver2': typeof KargoDriver2Route
+  '/_kargo/merchant': typeof KargoMerchantRouteWithChildren
   '/_kargo/wh-loader': typeof KargoWhLoaderRoute
   '/_kargo/coord-kupos/': typeof KargoCoordKuposIndexRoute
   '/_kargo/coord-op/': typeof KargoCoordOpIndexRoute
@@ -91,8 +115,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/coord-kupos'
+    | '/coord-op'
     | '/driver1'
     | '/driver2'
+    | '/merchant'
     | '/wh-loader'
     | '/coord-kupos/'
     | '/coord-op/'
@@ -110,8 +137,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_kargo'
+    | '/_kargo/coord-kupos'
+    | '/_kargo/coord-op'
     | '/_kargo/driver1'
     | '/_kargo/driver2'
+    | '/_kargo/merchant'
     | '/_kargo/wh-loader'
     | '/_kargo/coord-kupos/'
     | '/_kargo/coord-op/'
@@ -146,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KargoWhLoaderRouteImport
       parentRoute: typeof KargoRoute
     }
+    '/_kargo/merchant': {
+      id: '/_kargo/merchant'
+      path: '/merchant'
+      fullPath: '/merchant'
+      preLoaderRoute: typeof KargoMerchantRouteImport
+      parentRoute: typeof KargoRoute
+    }
     '/_kargo/driver2': {
       id: '/_kargo/driver2'
       path: '/driver2'
@@ -160,46 +197,96 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KargoDriver1RouteImport
       parentRoute: typeof KargoRoute
     }
+    '/_kargo/coord-op': {
+      id: '/_kargo/coord-op'
+      path: '/coord-op'
+      fullPath: '/coord-op'
+      preLoaderRoute: typeof KargoCoordOpRouteImport
+      parentRoute: typeof KargoRoute
+    }
+    '/_kargo/coord-kupos': {
+      id: '/_kargo/coord-kupos'
+      path: '/coord-kupos'
+      fullPath: '/coord-kupos'
+      preLoaderRoute: typeof KargoCoordKuposRouteImport
+      parentRoute: typeof KargoRoute
+    }
     '/_kargo/merchant/': {
       id: '/_kargo/merchant/'
-      path: '/merchant'
+      path: '/'
       fullPath: '/merchant/'
       preLoaderRoute: typeof KargoMerchantIndexRouteImport
-      parentRoute: typeof KargoRoute
+      parentRoute: typeof KargoMerchantRoute
     }
     '/_kargo/coord-op/': {
       id: '/_kargo/coord-op/'
-      path: '/coord-op'
+      path: '/'
       fullPath: '/coord-op/'
       preLoaderRoute: typeof KargoCoordOpIndexRouteImport
-      parentRoute: typeof KargoRoute
+      parentRoute: typeof KargoCoordOpRoute
     }
     '/_kargo/coord-kupos/': {
       id: '/_kargo/coord-kupos/'
-      path: '/coord-kupos'
+      path: '/'
       fullPath: '/coord-kupos/'
       preLoaderRoute: typeof KargoCoordKuposIndexRouteImport
-      parentRoute: typeof KargoRoute
+      parentRoute: typeof KargoCoordKuposRoute
     }
   }
 }
 
-interface KargoRouteChildren {
-  KargoDriver1Route: typeof KargoDriver1Route
-  KargoDriver2Route: typeof KargoDriver2Route
-  KargoWhLoaderRoute: typeof KargoWhLoaderRoute
+interface KargoCoordKuposRouteChildren {
   KargoCoordKuposIndexRoute: typeof KargoCoordKuposIndexRoute
+}
+
+const KargoCoordKuposRouteChildren: KargoCoordKuposRouteChildren = {
+  KargoCoordKuposIndexRoute: KargoCoordKuposIndexRoute,
+}
+
+const KargoCoordKuposRouteWithChildren = KargoCoordKuposRoute._addFileChildren(
+  KargoCoordKuposRouteChildren,
+)
+
+interface KargoCoordOpRouteChildren {
   KargoCoordOpIndexRoute: typeof KargoCoordOpIndexRoute
+}
+
+const KargoCoordOpRouteChildren: KargoCoordOpRouteChildren = {
+  KargoCoordOpIndexRoute: KargoCoordOpIndexRoute,
+}
+
+const KargoCoordOpRouteWithChildren = KargoCoordOpRoute._addFileChildren(
+  KargoCoordOpRouteChildren,
+)
+
+interface KargoMerchantRouteChildren {
   KargoMerchantIndexRoute: typeof KargoMerchantIndexRoute
 }
 
+const KargoMerchantRouteChildren: KargoMerchantRouteChildren = {
+  KargoMerchantIndexRoute: KargoMerchantIndexRoute,
+}
+
+const KargoMerchantRouteWithChildren = KargoMerchantRoute._addFileChildren(
+  KargoMerchantRouteChildren,
+)
+
+interface KargoRouteChildren {
+  KargoCoordKuposRoute: typeof KargoCoordKuposRouteWithChildren
+  KargoCoordOpRoute: typeof KargoCoordOpRouteWithChildren
+  KargoDriver1Route: typeof KargoDriver1Route
+  KargoDriver2Route: typeof KargoDriver2Route
+  KargoMerchantRoute: typeof KargoMerchantRouteWithChildren
+  KargoWhLoaderRoute: typeof KargoWhLoaderRoute
+}
+
 const KargoRouteChildren: KargoRouteChildren = {
+  KargoCoordKuposRoute: KargoCoordKuposRouteWithChildren,
+  KargoCoordOpRoute: KargoCoordOpRouteWithChildren,
   KargoDriver1Route: KargoDriver1Route,
   KargoDriver2Route: KargoDriver2Route,
+  KargoMerchantRoute: KargoMerchantRouteWithChildren,
   KargoWhLoaderRoute: KargoWhLoaderRoute,
-  KargoCoordKuposIndexRoute: KargoCoordKuposIndexRoute,
-  KargoCoordOpIndexRoute: KargoCoordOpIndexRoute,
-  KargoMerchantIndexRoute: KargoMerchantIndexRoute,
 }
 
 const KargoRouteWithChildren = KargoRoute._addFileChildren(KargoRouteChildren)
