@@ -1,12 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Bus, Route as RouteIcon, AlertTriangle, FileText, Gauge, Clock } from "lucide-react";
+import { useState } from "react";
+import { Bus, Route as RouteIcon, AlertTriangle, FileText, Gauge, Clock, PenLine } from "lucide-react";
 import { useKargo } from "@/lib/kargo/store";
 import { PhoneFrame } from "@/components/kargo/PhoneFrame";
 import { GpsMap } from "@/components/kargo/GpsMap";
 import { Button } from "@/components/ui/button";
 import { ActivityLog } from "@/components/kargo/ActivityLog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ModalIncidencia } from "@/components/kargo/ModalIncidencia";
+import { ModalFirmaDigital } from "@/components/kargo/ModalFirmaDigital";
 import { toast } from "sonner";
+import type { OT } from "@/lib/kargo/types";
 
 export const Route = createFileRoute("/_kargo/driver2")({
   head: () => ({
