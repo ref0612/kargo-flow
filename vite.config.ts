@@ -6,44 +6,25 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-// Detect deployment target
-const isNetlify = process.env.NETLIFY === "true" || process.env.CONTEXT !== undefined;
-
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
-    // Configure Nitro preset based on deployment target
-    nitro: {
-      presets: isNetlify ? ["netlify"] : ["cloudflare-pages"],
-      output: {
-        dir: isNetlify ? ".netlify/functions" : "dist",
-        publicDir: "dist/public",
-      },
-    },
   },
   vite: {
     build: {
-      minify: "terser",
-      terserOptions: {
-        compress: {
-          passes: 2,
-          pure_funcs: ["console.log"],
-        },
-        mangle: true,
-        output: {
-          comments: false,
-        },
-      },
+        minify: true,
       rollupOptions: {
         output: {
-          manualChunks: {
-            vendor: ["react", "react-dom"],
-          },
+            manualChunks: (id) => {
+              if (id.includes("node_modules/react") || id.includes("node_modules/react-dom")) {
+                return "vendor";
+              }
+            },
         },
       },
-      sourcemap: process.env.VERCEL_ENV === "production" ? false : true,
+      sourcemap: false,
       reportCompressedSize: false,
       cssCodeSplit: true,
       chunkSizeWarningLimit: 1000,
