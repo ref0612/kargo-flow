@@ -11,23 +11,27 @@ export interface DataTableColumn<T> {
   className?: string;
 }
 
+interface DataTableProps<T> {
+  rows: T[];
+  columns: DataTableColumn<T>[];
+  searchKeys?: (keyof T)[];
+  searchPlaceholder?: string;
+  onRowClick?: (row: T) => void;
+  selectedRowId?: string;
+  actions?: ReactNode;
+  empty?: string;
+}
+
 export function DataTable<T extends { id: string }>({
   rows,
   columns,
   searchKeys,
   searchPlaceholder = "Buscar…",
   onRowClick,
+  selectedRowId,
   actions,
   empty = "Sin resultados.",
-}: {
-  rows: T[];
-  columns: DataTableColumn<T>[];
-  searchKeys?: (keyof T)[];
-  searchPlaceholder?: string;
-  onRowClick?: (row: T) => void;
-  actions?: ReactNode;
-  empty?: string;
-}) {
+}: DataTableProps<T>) {
   const [search, setSearch] = useState("");
   const filtered = useMemo(() => {
     if (!search) return rows;
@@ -81,7 +85,7 @@ export function DataTable<T extends { id: string }>({
             {filtered.map((row) => (
               <tr
                 key={row.id}
-                className={`hover:bg-muted/30 ${onRowClick ? "cursor-pointer" : ""}`}
+                className={`hover:bg-muted/30 ${onRowClick ? "cursor-pointer" : ""} ${selectedRowId === row.id ? "bg-primary/5" : ""}`}
                 onClick={() => onRowClick?.(row)}
               >
                 {columns.map((c) => (

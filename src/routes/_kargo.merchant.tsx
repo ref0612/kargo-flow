@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_kargo/merchant")({
 });
 
 const items: RoleSidebarItem[] = [
-  { to: "/merchant", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/merchant", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/merchant/ordenes", label: "Órdenes", icon: ListOrdered },
   { to: "/merchant/seguimiento", label: "Seguimiento", icon: MapPin },
   { to: "/merchant/documentos", label: "Documentos", icon: FileText },

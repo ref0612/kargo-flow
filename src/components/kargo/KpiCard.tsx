@@ -1,33 +1,37 @@
-import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+import React from "react";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
-interface KpiProps {
-  label: string;
-  value: ReactNode;
-  hint?: ReactNode;
-  icon?: ReactNode;
-  tone?: "default" | "primary" | "success" | "warning" | "destructive" | "bus";
-  className?: string;
+export interface KpiProps {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  trend?: "up" | "down" | "neutral";
+  trendValue?: string;
 }
 
-const TONE: Record<NonNullable<KpiProps["tone"]>, string> = {
-  default: "text-foreground",
-  primary: "text-primary",
-  success: "text-success",
-  warning: "text-warning",
-  destructive: "text-destructive",
-  bus: "text-bus",
-};
-
-export function KpiCard({ label, value, hint, icon, tone = "default", className }: KpiProps) {
+export function KpiCard({ title, value, icon, trend, trendValue }: KpiProps) {
   return (
-    <div className={cn("kargo-kpi flex flex-col gap-1.5", className)}>
-      <div className="flex items-center justify-between text-xs font-medium tracking-wide uppercase text-muted-foreground">
-        <span>{label}</span>
-        {icon && <span className={cn("size-4", TONE[tone])}>{icon}</span>}
+    <div className="rounded-xl border bg-white text-card-foreground shadow-sm p-5 flex flex-col gap-3 transition-all hover:shadow-md">
+      <div className="flex items-center justify-between">
+        <h3 className="tracking-tight text-sm font-medium text-slate-500">{title}</h3>
+        <div className="p-2 bg-slate-50 rounded-lg">
+          {icon}
+        </div>
       </div>
-      <div className={cn("text-3xl font-semibold tabular-nums", TONE[tone])}>{value}</div>
-      {hint && <div className="text-xs text-muted-foreground">{hint}</div>}
+      
+      <div className="text-3xl font-bold text-slate-800">{value}</div>
+      
+      {trend && trendValue && (
+        <div className={`flex items-center text-xs font-medium ${
+          trend === 'up' ? 'text-emerald-600' : 
+          trend === 'down' ? 'text-rose-600' : 
+          'text-slate-500'
+        }`}>
+          {trend === 'up' && <ArrowUpRight className="mr-1 h-3.5 w-3.5" />}
+          {trend === 'down' && <ArrowDownRight className="mr-1 h-3.5 w-3.5" />}
+          {trendValue}
+        </div>
+      )}
     </div>
   );
 }

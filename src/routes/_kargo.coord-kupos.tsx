@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_kargo/coord-kupos")({
 });
 
 const items: RoleSidebarItem[] = [
-  { to: "/coord-kupos", label: "Enrutamiento", icon: Globe2 },
+  { to: "/coord-kupos", label: "Enrutamiento", icon: Globe2, exact: true },
   { to: "/coord-kupos/operadores", label: "Operadores", icon: Building2 },
   { to: "/coord-kupos/slas", label: "SLAs Globales", icon: Gauge },
 ];

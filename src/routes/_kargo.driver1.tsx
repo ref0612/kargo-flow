@@ -1,153 +1,139 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Truck, Package, ScanLine, PenTool, MapPin, ArrowRight, CheckCircle2, AlertTriangle } from "lucide-react";
+import { useState, useMemo } from "react";
 import { useKargo } from "@/lib/kargo/store";
-import { PhoneFrame } from "@/components/kargo/PhoneFrame";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { ActivityLog } from "@/components/kargo/ActivityLog";
-import { ModalIncidencia } from "@/components/kargo/ModalIncidencia";
-import { ModalFirmaDigital } from "@/components/kargo/ModalFirmaDigital";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { MapPin, Navigation, Package, PenTool, CheckCircle2, Building2 } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import type { OT } from "@/lib/kargo/types";
 
 export const Route = createFileRoute("/_kargo/driver1")({
-  head: () => ({
-    meta: [
-      { title: "Driver 1 — Recolección · KARGO" },
-      { name: "description", content: "App del conductor de recolección: escaneo y firma de bultos en origen." },
-    ],
-  }),
-  component: Driver1Page,
+  head: () => ({ meta: [{ title: "App Driver 1 · KARGO" }] }),
+  component: Driver1App,
 });
 
-function Driver1Page() {
-  const ot = useKargo((s) => s.ots.find((o) => o.estado === "recolectada" || o.estado === "asignada"));
-  const scan = useKargo((s) => s.scanBultoD1);
-  const firmar = useKargo((s) => s.firmarRecoleccion);
-  const reportar = useKargo((s) => s.reportarIncidencia);
-  const [secs, setSecs] = useState(0);
-  const [incOpen, setIncOpen] = useState(false);
-  const [firmaOpen, setFirmaOpen] = useState(false);
+function Driver1App() {
+  const ots = useKargo((s) => s.ots);
+  const firmarRecoleccion = useKargo((s) => s.firmarRecoleccion);
+  const entregarEnWH1 = useKargo((s) => s.entregarEnWH1);
+  const addLog = useKargo((s) => s.addLog);
 
-  useEffect(() => {
-    if (!ot) return;
-    const id = setInterval(() => setSecs((s) => s + 1), 1000);
-    return () => clearInterval(id);
-  }, [ot?.id]);
+  const miDriverId = "D-001"; 
 
-  const escaneados = ot?.bultosEscaneadosD1 ?? 0;
-  const total = ot?.bultos ?? 0;
-  const completo = total > 0 && escaneados >= total;
-  const mm = String(Math.floor(secs / 60)).padStart(2, "0");
-  const ss = String(secs % 60).padStart(2, "0");
+  // Filtros memoizados: Se actualizan automáticamente cuando 'ots' cambia en el store
+  const porRecoger = useMemo(() => 
+    ots.filter((o) => o.driver1 === miDriverId && o.estado === "asignada"),
+    [ots]
+  );
+  
+  const haciaWH1 = useMemo(() => 
+    ots.filter((o) => o.driver1 === miDriverId && o.estado === "recolectada"),
+    [ots]
+  );
+
+  const [activeTab, setActiveTab] = useState<"recoger" | "entregar">("recoger");
+  const [otActiva, setOtActiva] = useState<OT | null>(null);
+  const [pasos, setPasos] = useState<Record<string, "idle" | "en-camino" | "llegada">>({});
+  const [modalFirma, setModalFirma] = useState(false);
+
+  const handleIrAOrigen = (ot: OT) => {
+    setOtActiva(ot);
+    setPasos(prev => ({ ...prev, [ot.id]: "en-camino" }));
+    addLog(`Driver en camino a origen para OT ${ot.id}`, ot.id);
+    toast.info("Navegación iniciada");
+  };
+
+  const handleLlegada = (otId: string) => {
+    setPasos(prev => ({ ...prev, [otId]: "llegada" }));
+    addLog(`Driver llegó al origen de la OT ${otId}`, otId);
+    toast.success("Llegada registrada");
+  };
+
+  const handleCompletarRecoleccion = () => {
+    if (otActiva) {
+      firmarRecoleccion(otActiva.id);
+      toast.success("Recolección exitosa");
+      setModalFirma(false);
+      setOtActiva(null);
+    }
+  };
 
   return (
-    <div className="grid gap-6 p-6 lg:grid-cols-[1fr_320px]">
-      <PhoneFrame title="Driver 1 · Pickup">
-        <div className="space-y-4 p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Hola</div>
-              <div className="font-semibold">Carlos González</div>
-            </div>
-            <span className="rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-semibold text-warning">EN RUTA</span>
-          </div>
-
-          {!ot && (
-            <div className="rounded-2xl border-2 border-dashed p-8 text-center">
-              <Truck size={32} className="mx-auto text-muted-foreground" />
-              <div className="mt-3 font-semibold">Sin tareas asignadas</div>
-              <div className="text-xs text-muted-foreground">Espera la asignación del Coordinador.</div>
-            </div>
-          )}
-
-          {ot && (
-            <>
-              <div className="rounded-2xl bg-gradient-to-br from-primary to-primary/70 p-4 text-primary-foreground">
-                <div className="text-[10px] uppercase tracking-wider opacity-80">Tarea activa</div>
-                <div className="text-xl font-bold">{ot.id}</div>
-                <div className="text-sm opacity-90">{ot.merchant}</div>
-                <div className="mt-3 flex items-center justify-between text-xs">
-                  <span className="flex items-center gap-1"><MapPin size={12} /> {ot.origen}</span>
-                  <span className="tabular-nums">⏱ {mm}:{ss}</span>
-                </div>
-              </div>
-
-              <div className="rounded-xl border p-3">
-                <div className="mb-2 flex items-center justify-between text-xs">
-                  <span className="flex items-center gap-1 font-semibold"><Package size={12} /> Bultos escaneados</span>
-                  <span className="tabular-nums font-semibold">{escaneados} / {total}</span>
-                </div>
-                <Progress value={(escaneados / Math.max(1, total)) * 100} className="h-2" />
-                <Button className="mt-3 w-full gap-2" size="sm" onClick={() => { scan(ot.id, 5); if (escaneados + 5 >= total) toast.success("Todos los bultos escaneados"); }} disabled={completo}>
-                  <ScanLine size={14} /> {completo ? "Escaneo completo" : "Escanear lote (5)"}
-                </Button>
-              </div>
-
-              <div className="max-h-48 overflow-y-auto rounded-xl border bg-muted/30 p-2">
-                {Array.from({ length: total }).map((_, i) => {
-                  const done = i < escaneados;
-                  return (
-                    <div key={i} className={cn("flex items-center justify-between rounded-md px-2 py-1.5 text-[11px]", done && "bg-success/10 text-success")}>
-                      <span className="font-mono">KARGO-{ot.id.replace("OT-", "")}-{String(i + 1).padStart(3, "0")}</span>
-                      {done ? <CheckCircle2 size={12} /> : <span className="text-muted-foreground">○</span>}
-                    </div>
-                  );
-                })}
-              </div>
-
-              <Button
-                className="w-full gap-2"
-                disabled={!completo}
-                onClick={() => setFirmaOpen(true)}
-              >
-                <PenTool size={14} /> Solicitar firma y cerrar <ArrowRight size={14} />
-              </Button>
-              <Button variant="outline" size="sm" className="w-full gap-2 text-destructive border-destructive/30" onClick={() => setIncOpen(true)}>
-                <AlertTriangle size={14} /> Reportar incidencia
-              </Button>
-            </>
-          )}
-        </div>
-      </PhoneFrame>
-
-      {ot && (
-        <>
-          <ModalIncidencia
-            open={incOpen}
-            onOpenChange={setIncOpen}
-            otId={ot.id}
-            reportadoPor="Driver 1"
-            onSubmit={({ motivo, tipo, severidad, reportadoPor }) => {
-              reportar(ot.id, motivo, tipo, severidad, reportadoPor);
-              toast.error(`Incidencia reportada en ${ot.id}`);
-            }}
-          />
-          <ModalFirmaDigital
-            open={firmaOpen}
-            onOpenChange={setFirmaOpen}
-            otId={ot.id}
-            onSign={() => {
-              firmar(ot.id);
-              toast.success(`Firma capturada · ${ot.id} → WH1`);
-            }}
-          />
-        </>
-      )}
-
-      <div className="space-y-4">
-        <div className="kargo-card p-5">
-          <div className="text-sm font-semibold">Flujo del Driver 1</div>
-          <ol className="mt-3 space-y-2 text-xs text-muted-foreground">
-            <li>1. Recibe asignación del Coordinador zonal.</li>
-            <li>2. Llega a origen y escanea bulto por bulto.</li>
-            <li>3. Captura firma del Merchant.</li>
-            <li>4. La OT pasa automáticamente a <span className="font-medium text-bus">WH1</span>.</li>
-          </ol>
-        </div>
-        <ActivityLog limit={10} />
+    <div className="max-w-md mx-auto bg-slate-50 min-h-screen border-x shadow-sm flex flex-col font-sans">
+      {/* Header */}
+      <div className="bg-primary text-primary-foreground p-4 shadow-md">
+        <h1 className="text-lg font-semibold flex items-center gap-2">
+          <Package className="w-5 h-5" /> Konnect App
+        </h1>
+        <p className="text-primary-foreground/80 text-xs">Conductor: Juan Martínez (D-001)</p>
       </div>
+
+      {/* Tabs */}
+      <div className="flex bg-white border-b">
+        <button className={`flex-1 py-3 text-sm font-semibold border-b-2 ${activeTab === "recoger" ? "border-primary text-primary" : "border-transparent text-slate-500"}`} onClick={() => setActiveTab("recoger")}>
+          Por Recoger ({porRecoger.length})
+        </button>
+        <button className={`flex-1 py-3 text-sm font-semibold border-b-2 ${activeTab === "entregar" ? "border-primary text-primary" : "border-transparent text-slate-500"}`} onClick={() => setActiveTab("entregar")}>
+          Hacia Bodega ({haciaWH1.length})
+        </button>
+      </div>
+
+      {/* Listado */}
+      <ScrollArea className="flex-1 p-4">
+        {activeTab === "recoger" ? (
+          <div className="space-y-4">
+            {porRecoger.length === 0 && <p className="text-center text-slate-400 mt-10">No tienes recolecciones pendientes.</p>}
+            {porRecoger.map((ot) => (
+              <div key={ot.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">{ot.id}</span>
+                  <span className="text-xs font-medium text-slate-500">{ot.bultos} Bultos</span>
+                </div>
+                <h3 className="font-semibold text-slate-800">{ot.merchant}</h3>
+                <p className="text-xs text-slate-500">{ot.direccionOrigen}</p>
+                
+                <div className="pt-2 border-t mt-2">
+                  {!pasos[ot.id] || pasos[ot.id] === "idle" ? (
+                    <Button className="w-full" onClick={() => handleIrAOrigen(ot)}><Navigation className="mr-2 w-4 h-4"/> Ir a origen</Button>
+                  ) : pasos[ot.id] === "en-camino" ? (
+                    <Button className="w-full bg-amber-500 hover:bg-amber-600" onClick={() => handleLlegada(ot.id)}><MapPin className="mr-2 w-4 h-4"/> Llegué al origen</Button>
+                  ) : (
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700" onClick={() => { setOtActiva(ot); setModalFirma(true); }}><PenTool className="mr-2 w-4 h-4"/> Firmar Recolección</Button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {haciaWH1.length === 0 && <p className="text-center text-slate-400 mt-10">No tienes cargas en tránsito.</p>}
+            {haciaWH1.map((ot) => (
+              <div key={ot.id} className="bg-white p-4 rounded-xl shadow-sm border border-emerald-200">
+                <div className="flex items-center gap-2 text-emerald-700 font-bold mb-2">
+                  <CheckCircle2 size={16} /> Recolectada
+                </div>
+                <p className="text-sm text-slate-600 mb-4">Carga de <strong>{ot.merchant}</strong> ({ot.bultos} bultos).</p>
+                <Button className="w-full bg-emerald-700" onClick={() => entregarEnWH1(ot.id)}><Building2 className="mr-2"/> Entregar en WH1</Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </ScrollArea>
+
+      {/* Modal Firma */}
+      <Dialog open={modalFirma} onOpenChange={setModalFirma}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>Confirmar Recolección</DialogTitle></DialogHeader>
+          <div className="py-4 text-sm text-slate-600">
+            Confirma la recepción física de los bultos para la orden <strong>{otActiva?.id}</strong>.
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setModalFirma(false)}>Cancelar</Button>
+            <Button onClick={handleCompletarRecoleccion} className="bg-emerald-600">Confirmar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

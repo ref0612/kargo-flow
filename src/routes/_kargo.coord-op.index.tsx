@@ -45,6 +45,10 @@ function CoordOpPage() {
   const [selOt, setSelOt] = useState<string | null>(null);
   const [selDriver, setSelDriver] = useState<string | null>(null);
 
+  const otsParaAsignarD1 = ots.filter(
+    (ot: OT) => ot.estado === "asignada" && ot.operador === "Op. RM Centro" && !ot.driver1
+  );
+
   const kpis = {
     porAsignar: ots.filter((o) => o.estado === "creada").length,
     recol: ots.filter((o) => o.estado === "recolectada").length,
@@ -94,7 +98,7 @@ function CoordOpPage() {
                   <tr><th className="px-5 py-2 text-left">OT</th><th className="px-5 py-2 text-left">Merchant</th><th className="px-5 py-2 text-left">Origen</th><th className="px-5 py-2 text-right">Bultos</th><th></th></tr>
                 </thead>
                 <tbody className="divide-y">
-                  {ots.filter((o) => o.estado === "creada").map((o) => (
+                  {otsParaAsignarD1.map((o) => (
                     <tr key={o.id} className={cn("hover:bg-muted/30", selOt === o.id && "bg-primary/5")}>
                       <td className="px-5 py-2 font-mono text-xs font-semibold text-primary">{o.id}</td>
                       <td className="px-5 py-2">{o.merchant}</td>
@@ -107,7 +111,7 @@ function CoordOpPage() {
                       </td>
                     </tr>
                   ))}
-                  {!ots.some((o) => o.estado === "creada") && (
+                  {!otsParaAsignarD1.length && (
                     <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No hay OTs por asignar.</td></tr>
                   )}
                 </tbody>

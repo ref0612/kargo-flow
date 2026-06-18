@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_kargo/coord-op")({
 });
 
 const items: RoleSidebarItem[] = [
-  { to: "/coord-op", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/coord-op", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/coord-op/asignacion", label: "Asignación D1", icon: UserCheck },
   { to: "/coord-op/asignacion-bus", label: "Asignación Bus", icon: Bus },
   { to: "/coord-op/kanban", label: "Kanban", icon: Kanban },
