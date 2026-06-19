@@ -14,6 +14,96 @@ export type OTEstado =
   | "suspendida"         // 950: SUSPENDIDA
   | "incidencia";
 
+// 1. Maquina de Estados Estricta (evita perder OTs por estados no mapeados)
+export type OTState =
+  | "100_CREADA_POR_ASIGNAR"
+  | "200_ASIGNADA"
+  | "150_REASIGNADA"
+  | "300_RECOLECTADA"
+  | "400_RECIBIDA_WAREHOUSE_1"
+  | "450_PENDIENTE_ASIGNACION_BUS"
+  | "500_EN_TRANSITO"
+  | "600_RECIBIDA_WAREHOUSE_2"
+  | "700A_DISPONIBLE_PARA_RETIRO"
+  | "700B_EN_DISTRIBUCION_LOCAL"
+  | "800_FINALIZADA"
+  | "900_CANCELADA"
+  | "950_SUSPENDIDA";
+
+// 2. Opciones de modalidad de entrega
+export type ModalidadEntrega = "A_RETIRO_EN_BODEGA" | "B_ENTREGA_CLIENTE_FINAL";
+
+export interface OrderOfTransport {
+  id: string;
+  trackingNumber: string;
+  state: OTState;
+  originZone: string;
+  destinationZone: string;
+  assignedDriverId?: string;
+  modalidad: ModalidadEntrega;
+  subOts?: string[];
+  incidencias?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Operator {
+  id: string;
+  name: string;
+  role: "DRIVER_1" | "DRIVER_2" | "DRIVER_3" | "LOADER_1" | "LOADER_2";
+  ciudadesOperacion: string[];
+  active: boolean;
+}
+
+export const LEGACY_TO_OT_STATE: Record<Exclude<OTEstado, "incidencia">, OTState> = {
+  creada: "100_CREADA_POR_ASIGNAR",
+  asignada: "200_ASIGNADA",
+  reasignada: "150_REASIGNADA",
+  recolectada: "300_RECOLECTADA",
+  recibida_wh1: "400_RECIBIDA_WAREHOUSE_1",
+  pendiente_bus: "450_PENDIENTE_ASIGNACION_BUS",
+  "en-transito": "500_EN_TRANSITO",
+  recibida_wh2: "600_RECIBIDA_WAREHOUSE_2",
+  disponible_retiro: "700A_DISPONIBLE_PARA_RETIRO",
+  en_distribucion: "700B_EN_DISTRIBUCION_LOCAL",
+  finalizada: "800_FINALIZADA",
+  cancelada: "900_CANCELADA",
+  suspendida: "950_SUSPENDIDA",
+};
+
+export const OT_STATE_TO_LEGACY: Record<OTState, Exclude<OTEstado, "incidencia">> = {
+  "100_CREADA_POR_ASIGNAR": "creada",
+  "200_ASIGNADA": "asignada",
+  "150_REASIGNADA": "reasignada",
+  "300_RECOLECTADA": "recolectada",
+  "400_RECIBIDA_WAREHOUSE_1": "recibida_wh1",
+  "450_PENDIENTE_ASIGNACION_BUS": "pendiente_bus",
+  "500_EN_TRANSITO": "en-transito",
+  "600_RECIBIDA_WAREHOUSE_2": "recibida_wh2",
+  "700A_DISPONIBLE_PARA_RETIRO": "disponible_retiro",
+  "700B_EN_DISTRIBUCION_LOCAL": "en_distribucion",
+  "800_FINALIZADA": "finalizada",
+  "900_CANCELADA": "cancelada",
+  "950_SUSPENDIDA": "suspendida",
+};
+
+// Normaliza estados entrantes (legacy o estrictos) al formato legacy usado por el store actual.
+export const normalizeOTEstado = (state: string): OTEstado => {
+  if (state === "incidencia") return "incidencia";
+
+  const compact = state.trim().replace(/\s+/g, "_").toUpperCase();
+  const direct = OT_STATE_TO_LEGACY[compact as OTState];
+  if (direct) return direct;
+
+  // Acepta codigos con espacio ("200 ASIGNADA") o guion y los convierte a clave estricta.
+  const strictCandidate = compact.replace(/-/g, "_") as OTState;
+  const fromStrictCandidate = OT_STATE_TO_LEGACY[strictCandidate];
+  if (fromStrictCandidate) return fromStrictCandidate;
+
+  const legacy = state.trim().toLowerCase() as OTEstado;
+  return legacy;
+};
+
 export interface OT {
   id: string;
   merchant: string;
@@ -42,6 +132,8 @@ export interface Operador {
   id: string;
   nombre: string;
   zona: string;
+  rol?: "DRIVER_1" | "DRIVER_2" | "DRIVER_3" | "LOADER_1" | "LOADER_2";
+  ciudadesOperacion?: string[];
   contacto: string;
   telefono: string;
   flota: number;

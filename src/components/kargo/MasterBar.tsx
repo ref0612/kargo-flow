@@ -21,12 +21,13 @@ export function MasterBar() {
   const total = useKargo((s) => s.ots.length);
 
   return (
-    <div className="kargo-bar sticky top-0 z-50 flex h-12 items-center gap-1 overflow-x-auto px-3">
-      <span className="mr-3 flex items-center gap-2 text-sm font-bold tracking-tight">
-        <span className="grid size-6 place-items-center rounded-md bg-primary text-primary-foreground text-[11px]">K</span>
-        KARGO <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-white/70">Master</span>
+    <div className="sticky top-0 z-50 flex h-16 items-center gap-2 overflow-x-auto bg-white border-b px-6 shadow-sm">
+      <span className="mr-4 flex items-center gap-1 text-2xl font-black tracking-tight text-primary">
+        kargo<span className="text-secondary">.cl</span>
       </span>
-      <div className="mx-2 h-5 w-px bg-white/15" />
+      
+      <div className="mx-2 h-6 w-px bg-border" />
+      
       {ROLES.map((r) => {
         const active = pathname === r.to;
         const Icon = r.icon;
@@ -35,38 +36,40 @@ export function MasterBar() {
             key={r.to}
             to={r.to}
             className={cn(
-              "group inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1.5 text-[12px] font-medium transition",
-              active ? "bg-primary text-primary-foreground" : "text-white/70 hover:bg-white/10 hover:text-white"
+              "group inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-medium transition",
+              active ? "bg-accent text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
           >
-            <Icon size={14} /> {r.label}
-            <span className={cn("rounded-full px-1.5 py-0.5 text-[9px]", active ? "bg-white/25" : "bg-white/10")}>{r.badge}</span>
+            <Icon size={16} /> {r.label}
+            <span className={cn("rounded-full px-2 py-0.5 text-[10px]", active ? "bg-primary text-white" : "bg-muted-foreground/20 text-muted-foreground")}>
+              {r.badge}
+            </span>
           </Link>
         );
       })}
-      <div className="ml-auto flex items-center gap-2 pl-3">
-        <span className="hidden text-[11px] text-white/60 md:inline">{total} OTs activas</span>
+      
+      <div className="ml-auto flex items-center gap-3 pl-4">
+        <span className="hidden text-xs text-muted-foreground md:inline">{total} OTs activas</span>
         <Button
           size="sm"
-          variant="secondary"
-          className="h-7 gap-1.5 text-xs"
+          className="h-8 gap-1.5 text-xs rounded-full px-4"
           onClick={() => {
             generar();
-            toast.success("Flujo de ejemplo iniciado", { description: "Verás la OT avanzar por todos los roles." });
+            toast.success("Flujo de ejemplo iniciado");
           }}
         >
-          <Wand2 size={13} /> Generar flujo
+          <Wand2 size={14} /> Generar flujo
         </Button>
         <Button
           size="sm"
-          variant="ghost"
-          className="h-7 gap-1.5 text-xs text-white/70 hover:bg-white/10 hover:text-white"
+          variant="outline"
+          className="h-8 gap-1.5 text-xs rounded-full px-4"
           onClick={() => {
             reset();
             toast("Demo reiniciado");
           }}
         >
-          <RotateCcw size={13} /> Reset
+          <RotateCcw size={14} /> Reset
         </Button>
       </div>
     </div>
